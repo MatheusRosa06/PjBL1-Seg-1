@@ -10,10 +10,11 @@ public class JwtService {
 
     // TODO: O ALUNO DEVE BUSCAR DE UMA VARIÁVEL DE AMBIENTE (System.getenv)
     // A chave deve ter pelo menos 256 bits (32 caracteres) para o algoritmo HS256.
-    private final String SECRET_KEY = "sua_chave_secreta_com_pelo_menos_32_caracteres_aqui";
+    // private final String SECRET_KEY = "sua_chave_secreta_com_pelo_menos_32_caracteres_aqui";
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        String secret = System.getenv("JWT_SECRET");
+            return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
     /**
@@ -42,8 +43,13 @@ public class JwtService {
      * 2. Retornar o Subject do Payload.
      */
     public String extractEmail(String token) {
-        return null;
-        //Seu código aqui
+        return Jwts.parserBuilder()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
+    
     }
 
     /**
@@ -59,6 +65,10 @@ public class JwtService {
             // 1. Use o Jwts.parser() para descriptografar o token usando a mesma SECRET_KEY da geração.
             // 2. A biblioteca JJWT joga uma exceção automaticamente se o token estiver expirado ou a assinatura for inválida.
             // 3. Se o parse ocorrer sem erros, o token é íntegro. Retorne true.
+            Jwts.parserBuilder()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
             // 4. Capture exceções específicas (ExpiredJwtException, SignatureException) e logue o erro para debug.

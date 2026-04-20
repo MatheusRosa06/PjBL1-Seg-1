@@ -261,7 +261,7 @@ const AuthStore = (() => {
   };
 })();
 
-const API = 'SUA API';
+const API = "http://localhost:8080";
 
 // ── Utilitários de UI ──────────────────────────────────────────
 function showAlert(id, msg, type = 'danger') {
@@ -356,7 +356,7 @@ async function handleLogin() {
     const res = await fetch(`${API}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: pass })
+      body: JSON.stringify({ email: email, senha: pass })
     });
 
     const data = await res.json();
